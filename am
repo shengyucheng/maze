@@ -1,0 +1,63 @@
+#include<stdio.h>
+#include<windows.h>
+#include<conio.h>
+
+#define ROW 9
+#define COL 11
+
+char map[ROW][COL+1]={
+{"*#*********\0"},
+{"***###*###*\0"},
+{"###**#****#\0"},
+{"*#**###**#*\0"},
+{"***********\0"},
+{"#####*##*##\0"},
+{"**#*****#*E\0"},
+{"***#*###**#\0"},
+{"*#*********\0"},
+};
+
+void show_cursor(x,y)
+{
+	COORD pos;
+	pos.X=x;
+	pos.Y=y;
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+}
+
+int curX,curY;
+int main()
+{
+	int i=0;
+
+	while(1)
+	{
+		for(;i<ROW;i++)
+		{
+			puts(map[i]);
+		}
+
+		show_cursor(curX,curY);//光标
+
+		char t=getch();
+		switch(t)
+		{
+			case 'w':if((curY-1)>=0 && map[curY-1][curX]=='*' || map[curY-1][curX]=='E') curY--;//向上走
+			break;
+			case 's':if((curY+1)<ROW && map[curY+1][curX]=='*' || map[curY+1][curX]=='E') curY++;//向下走
+			break;
+			case 'a':if((curX-1)>=0 && map[curY][curX-1]=='*' || map[curY][curX-1]=='E') curX--;//向左走
+			break;
+			case 'd':if((curX+1)<COL && map[curY][curX+1]=='*' || map[curY][curX+1]=='E') curY++;//向右走
+			break;
+			if(map[curY][curX]=='E')
+			break;
+			default :
+			break;
+
+		}
+		
+	}
+
+	return 0;
+}
