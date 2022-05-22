@@ -1,84 +1,69 @@
-#include<stdio.h>
-#define N 3
-typedef struct student 
-{
-	char country[20];
-	float num;
-}std;
 
-void sr(std *,int );
-void xie(std *,int );
-void du(std *,int );
-void sc(std *,int );
+#include<stdio.h>
+struct Medal
+{
+	char country[10];
+	int goldNum;
+	int silverNum;
+	int bronzeNum;
+	int totalNum;
+};
+typedef struct Medal Medal;
 
 int main()
 {
-	std sx[N],sxt[N];
-	sr(sx,N);
-	xie(sx,N);
-	du(sxt,N);
-	sc(sxt,N);
+	Medal medal[8];
+	Medal x;
+	char a[5][10];
+	FILE*fp;
+	fp=fopen("E:\\编程\\实验六\\file.txt","r");
+	if(fp==NULL)
+	{
+		printf("打开文本文档失败\n");
+		return 0;
+	}
+	for(int i=0;i<9;i++)
+	{
+		if(i==0)
+		{
+			fscanf(fp,"%s %s %s %s %s",&a[0],&a[1],&a[2],&a[3],&a[4]);
+			continue;
+		}
+		fscanf(fp,"%s %d %d %d %d\n",medal[i-1].country,&medal[i-1].goldNum,&medal[i-1].silverNum,&medal[i-1].bronzeNum,&medal[i-1].totalNum);
+	}
+	fclose(fp);
+	for(int j=0;j<8;j++)
+	{
+		for(int i=0;i<8;i++)
+		{
+			if(medal[i].goldNum>medal[i+1].goldNum)
+			{
+				x=medal[i+1];
+				medal[i+1]=medal[i];
+				medal[i]=x;
+			}
+			else if(medal[i].goldNum==medal[i+1].goldNum && medal[i].silverNum > medal[i+1].silverNum)
+			{
+				x=medal[i+1];
+				medal[i+1]=medal[i];
+				medal[i]=x;
+			}
+			else if( (medal[i].goldNum==medal[i+1].goldNum&&medal[i].silverNum==medal[i+1].silverNum) && medal[i].bronzeNum>medal[i+1].bronzeNum)
+			{
+				x=medal[i+1];
+				medal[i+1]=medal[i];
+				medal[i]=x;
+			}
+		}
+		
+	}
+	FILE*fa;
+	fa=fopen("E:\\编程\\实验六\\file_sorted.txt","w");
+	fprintf(fa,"%s\t%s\t%s\t%s\t%s\n",a[0],a[1],a[2],a[3],a[4]);
+	for(int j=0;j<8;j++)
+	{
+		fprintf(fa,"%s\t%d\t%d\t%d\t%d\n",medal[j].country,medal[j].goldNum,medal[j].silverNum,medal[j].bronzeNum,medal[j].totalNum);
+	}
+	fclose(fa);
 	return 0;
-}
-
-void sr(std sx1[],int n)
-{
-	int i,j,t;
-	for(i=0;i<n;i++)
-	{
-		printf("请输入第%d行信息：\n",i+1);
-		printf("国家  金牌数：\n");
-		scanf("%s%f",&sx1[i].country,&sx1[i].num);
-	}
-
-	for(i=1;i<n;i++)
-	for(j=0;j<n-i;j++)
-	if(sx1[j].num < sx1[j+1].num)
-	{
-		t=sx1[j].num;
-		sx1[j].num=sx1[j+1].num;
-		sx1[j+1].num=t;
-	}
-}
-
-void xie(std sx2[],int n)
-{
-	FILE *fp;
-	int i;
-	if((fp=fopen("d:\\y\\lzy\\text.txt","wb"))==NULL)
-	{
-		printf("文件打开失败！！！\n");
-		return ;
-	}
-	for(i=0;i<n;i++)
-	{
-		fwrite(&sx2[i],sizeof(std),1,fp);
-	}
-	rewind(fp);
-	fclose(fp);
-}
-
-void du(std sx3[],int n)
-{
-	FILE *fp;
-	int i;
-	if((fp=fopen("d:\\y\\lzy\\text.txt","rb"))==NULL)
-	{
-		printf("文件打开失败！！！\n");
-		return ;
-	}
-	for(i=0;i<n;i++)
-	{
-		fread(&sx3[i],sizeof(std),1,fp);
-	}
-	fclose(fp);
-	return ;
-}
-
-void sc(std sx4[],int n)
-{
-	int i;
-	for(i=0;i<n;i++)
-		printf("%d\t%s\t%f\n",i+1,sx4[i].country,sx4[i].num);
-
 }
